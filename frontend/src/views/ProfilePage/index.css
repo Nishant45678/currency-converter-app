@@ -1,0 +1,7 @@
+.profile__action-wrapper{
+  display: flex;
+}
+
+button{
+  margin: 0 0.4em;
+}

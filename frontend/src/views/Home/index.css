@@ -1,0 +1,40 @@
+select {
+  display: block;
+  width: 100%;
+  padding: 0.8em 0.4em;
+  background-color: transparent;
+  color: black;
+  outline: none;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.form__from,
+.form__to {
+  display: flex;
+}
+
+.form__currency,
+.form__amount {
+  flex: 1;
+  padding: 0.8em 0.4em;
+}
+
+.form__action {
+  display: flex;
+  gap: 1em;
+}
+
+.icons {
+  background-color: transparent;
+}
+
+button{
+  cursor: pointer;
+  border:none;
+  outline: none;
+  font-size: 0.9rem;
+  padding: 0.1em;
+  background-color: rgb(17, 127, 218);
+  border-radius: 5px;
+}

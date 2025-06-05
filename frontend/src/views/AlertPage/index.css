@@ -1,0 +1,18 @@
+.alert__form-currency{
+  display:flex;
+  gap: 1em;
+  & div{
+    flex:1;
+  }
+}
+
+.alert__set-condition{
+  display: flex;
+  gap: 1em;
+  align-items: center;
+ 
+}
+.alert__unit,
+.alert__threshold-wrapper{
+  flex:1
+}
