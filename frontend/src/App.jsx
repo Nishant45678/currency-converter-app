@@ -14,6 +14,7 @@ import {
 } from "./views";
 import { MainLayout } from "./layout";
 import userStore from "./stores/useUserStore";
+import {ToastContainer} from "react-toastify"
 
 const Protected = ({ children }) => {
   const user = userStore((state) => state.user);
@@ -80,7 +81,10 @@ const App = () => {
       ],
     },
   ]);
-  return <RouterProvider router={router}></RouterProvider>;
+  return (<>
+    <RouterProvider router={router}/>
+    <ToastContainer/>
+  </>);
 };
 
 export default App;

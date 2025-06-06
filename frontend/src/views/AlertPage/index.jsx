@@ -4,6 +4,7 @@ import "./index.css";
 import alertStore from "../../stores/useAlertStore";
 import axios from "axios";
 import useUtil from "../../stores/useUtil";
+import {toast} from "react-toastify"
 
 const AlertPage = () => {
   const [message, setMessage] = useState({ type: "", message: "" });
@@ -40,6 +41,7 @@ const AlertPage = () => {
       }
     } catch (error) {
       const errMsg = error.response?.data?.message;
+      // console.log(errMsg)
       setMessage({ type: "error", message: errMsg||"Something went wrong while setting Alert" });
     } finally {
       setIsLoading(false);
@@ -56,7 +58,17 @@ const AlertPage = () => {
   };
 
   useEffect(() => {
-    console.log(message);
+    if(!message.type) return;
+    const timeout = setTimeout(() => {
+      if(message.type=== "success"){
+        toast.success(message.message)
+      }else if(message.type==="error"){
+        toast.error(message.message)
+      }
+      
+    }, 300);
+
+    return clearTimeout(timeout)
   }, [message]);
   return (
     <div className="form__wrapper">
