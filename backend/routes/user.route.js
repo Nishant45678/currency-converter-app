@@ -55,8 +55,9 @@ router.put("/profile", isAuthenticated, async (req, res, next) => {
     const updated = await User.findById(req.user._id);
     if (oldPassword && newPassword) {
       const isMatch = await updated.verifyPassword(oldPassword);
+      console.log(isMatch)
       if (!isMatch)
-        return sendError("password does not match",401);
+        return next(sendError("password does not match",401));
       updated.password = newPassword;
     }
     if (username !== updated.username) updated.username = username;

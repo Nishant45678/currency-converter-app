@@ -37,7 +37,7 @@ const postFavourite = async (req, res,next) => {
 const deleteFavourite = async (req, res,next) => {
   try {
     const { id } = req.params;
-    const userId = req.user;
+    const userId = req.user._id;
     const deleted = await Favourite.findOneAndDelete({ _id: id, userId });
     if (!deleted)
       return next(sendError("Favourite not found",404)) 

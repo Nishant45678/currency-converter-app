@@ -21,18 +21,22 @@ const Dashboard = () => {
         setIsLoading(true);
         try {
           const req = await axios.delete(
-            `http://localhost:4000/favourites/${id}`,
+            `http://localhost:4000/favorites/${id}`,
             { withCredentials: true }
           );
-          const msg = req.data.message||"Removed from favourites list";
+          const msg = req.data.message || "Removed from favourites list";
           setMessage({ type: "success", message: msg });
           dislike(id);
         } catch (error) {
-          const errMsg = error.response?.data?.message||"Something went wrong";
+          const errMsg =
+            error.response?.data?.message || "Something went wrong";
           setMessage({ type: "error", message: errMsg });
         } finally {
           setIsLoading(false);
         }
+        return () => {
+          debouncedDislike.cancel();
+        };
       }, 300),
     [dislike]
   );
@@ -42,13 +46,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     (async () => {
-      setIsLoading(true)
       try {
         const req1 = await axios.get("http://localhost:4000/favorites", {
           withCredentials: true,
         });
         if (req1.status === 200) {
-          console.log(req1.data.data)
           setFavourites(req1.data.data);
         }
         const req2 = await axios.get("http://localhost:4000/alerts", {
@@ -59,8 +61,8 @@ const Dashboard = () => {
         }
       } catch (error) {
         console.log(error);
-      }finally{
-        setIsLoading(false)
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -85,9 +87,9 @@ const Dashboard = () => {
                 <tr key={fav._id}>
                   <td>{fav.from}</td>
                   <td>{fav.to}</td>
-                  <td>{fav.date}</td>
-                  <td>{fav.amount}</td>
-                  <td>{fav.camount}</td>
+                  <td>{fav.date.split("T")[0]}</td>
+                  <td>{fav.amount || fav.originalAmount}</td>
+                  <td>{fav.camount || fav.convertedAmount}</td>
                   <td>
                     {
                       <button
@@ -123,17 +125,17 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {alerts.length>0?
-            
-            alerts.map((alert) => (
-              <tr key={alert._id}>
-                <td>{alert.from}</td>
-                <td>{alert.to}</td>
-                <td>{alert.condition}</td>
-                <td>{alert.threshold}</td>
-                <td>{alert.wantDailyUpdates ? "yes" : "no"}</td>
-              </tr>
-            )):(
+            {alerts.length > 0 ? (
+              alerts.map((alert) => (
+                <tr key={alert._id}>
+                  <td>{alert.from}</td>
+                  <td>{alert.to}</td>
+                  <td>{alert.condition}</td>
+                  <td>{alert.threshold}</td>
+                  <td>{alert.wantDailyUpdates ? "yes" : "no"}</td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td colSpan={5}>No Alerts found</td>
               </tr>

@@ -9,6 +9,8 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const user = userStore((state) => state.user);
+  const login = userStore((state) => state.login);
+
   const logout = userStore((state) => state.logout);
   const [wantEdit, setWantEdit] = useState(false);
   const [data, setData] = useState({
@@ -42,12 +44,14 @@ const ProfilePage = () => {
         withCredentials: true,
       });
       if (req.status === 200) {
-        const msg = await req.data.message||"Logout successfully";
+        const msg = (await req.data.message) || "Logout successfully";
         setMessage({ type: "success", text: msg });
         logout();
       }
     } catch (error) {
-      const errMsg = await error?.response?.data.message||"Something went wrong while logging out.";
+      const errMsg =
+        (await error?.response?.data.message) ||
+        "Something went wrong while logging out.";
       setMessage({ type: "error", text: errMsg });
     } finally {
       setIsLoading(false);
@@ -61,13 +65,16 @@ const ProfilePage = () => {
       const req = await axios.put("http://localhost:4000/profile", data, {
         withCredentials: true,
       });
-      
-      if (req.status===200) {
+      if (req.status === 200) {
         const msg = req.data.message;
-        setMessage({ type: "success", text: msg||"Prfile updated successfully." });
+        setMessage({
+          type: "success",
+          text: msg || "Profile updated successfully.",
+        });
+        login(req.data.user);
       }
     } catch (error) {
-      const errmsg = error?.response?.data.message|| "something went wrong";
+      const errmsg = error?.response?.data.message || "something went wrong";
       setMessage({ type: "error", text: errmsg });
     } finally {
       setIsLoading(false);
@@ -80,7 +87,7 @@ const ProfilePage = () => {
   return (
     <div className="form__wrapper">
       <Card title={"Your Profile"}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <Label htmlFor="profile__username">Your username: </Label>
             <Input
@@ -140,7 +147,6 @@ const ProfilePage = () => {
             {wantEdit ? (
               <Input
                 type="submit"
-                onClick={handleSubmit}
                 value={isLoading ? "submiting" : "submit"}
                 disabled={isLoading}
               />
