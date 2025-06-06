@@ -4,6 +4,7 @@ import { Heart } from "../../assets/icons/";
 import "./index.css";
 import useFavouriteStore from "../../stores/useFavouriteStore";
 import axios from "axios";
+import useUtil from "../../stores/useUtil";
 const Home = () => {
   const toggleLike = useFavouriteStore((state) => state.toggleLike);
   const favourites = useFavouriteStore((state) => state.favourites);
@@ -11,11 +12,14 @@ const Home = () => {
   const [message, setMessage] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
 
+const currencies = useUtil((state) => state.currencies);
+const setCurrencies = useUtil((state) => state.setCurrencies);
+
   const [currency, setCurrency] = useState({
     from: "",
     to: "",
     amount: 1,
-    camount: 100,
+    camount: null,
     date: new Date().toJSON().slice(0, 10),
   });
   const [isFavourite, setIsFavourite] = useState(false);
@@ -24,7 +28,7 @@ const Home = () => {
     setCurrency((prv) => ({ ...prv, [name]: value }));
   };
   const handleIsFavourite = async () => {
-    if (currency.camount !== 1) {
+    if (currency.camount >=0) {
       setIsLoading(true);
       try {
         const req = await axios.post(
@@ -47,18 +51,21 @@ const Home = () => {
           toggleLike(currency);
         }
       } catch (error) {
-        setMessage({ type: "error", message: error.response?.data?.message || "Something went Wrong." });
+        setMessage({
+          type: "error",
+          message: error.response?.data?.message || "Something went Wrong.",
+        });
       } finally {
         setIsLoading(false);
       }
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = axios.post("http://localhost:4000/currency/convert", {
+      const req = await axios.post("http://localhost:4000/convert", {
         from: currency.from,
         to: currency.to,
         amount: currency.amount,
@@ -76,7 +83,10 @@ const Home = () => {
         }));
       }
     } catch (error) {
-      setMessage({ type: "error", message: error.response?.data.message ||"Something went wrong." });
+      setMessage({
+        type: "error",
+        message: error.response?.data.message || "Something went wrong.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -93,6 +103,17 @@ const Home = () => {
     console.log(message);
   }, [favourites, currency, message]);
 
+  useEffect(()=>{
+   
+     (async()=>{try {
+      const data = await axios.get("http://localhost:4000/currencies");
+      if (data.status === 200) setCurrencies(data.data.data)
+    } catch (error) {
+      console.log(error)
+    }})();
+    
+  },[])
+
   return (
     <div className="form__wrapper">
       <Card title={"converter"}>
@@ -108,7 +129,16 @@ const Home = () => {
                 required
               >
                 <option value="">Select</option>
-                <option value="USD">USD</option>
+                {
+                  currencies ? (
+                    Object.keys(currencies).map((i)=>(
+                <option key={i} value={i}>{i}</option>
+
+                    ))
+                  ):null
+                
+
+                }
               </select>
             </div>
 
@@ -136,7 +166,15 @@ const Home = () => {
                 required
               >
                 <option value="">Select</option>
-                <option value="INR">INR</option>
+                {
+                  currencies ? (
+                    Object.keys(currencies).map((i)=>(
+                <option key={i} value={i}>{i}</option>
+
+                    ))
+                  ):null
+
+                }
               </select>
             </div>
 
@@ -145,8 +183,8 @@ const Home = () => {
               <Input
                 name="camount"
                 id="home__toValue"
-                value={currency.camount}
-                type=""
+                value={currency.camount??""}
+                type="number"
                 disabled
               />
             </div>
@@ -160,7 +198,7 @@ const Home = () => {
             />
           </div>
           <div className="form__action">
-            <Input type="submit" value={isLoading ? "Converting" : "Convert"} />
+            <Input type="submit" value={isLoading ? "Converting" : "Convert"} disabled={isLoading}/>
             <button type="button" className="icons" onClick={handleIsFavourite}>
               <div>
                 <Heart isFavourite={isFavourite} />

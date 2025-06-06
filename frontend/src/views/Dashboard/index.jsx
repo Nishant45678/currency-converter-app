@@ -48,6 +48,7 @@ const Dashboard = () => {
           withCredentials: true,
         });
         if (req1.status === 200) {
+          console.log(req1.data.data)
           setFavourites(req1.data.data);
         }
         const req2 = await axios.get("http://localhost:4000/alerts", {

@@ -6,9 +6,13 @@ const useUtil = create((set) => ({
   setHeader: (heading, requireLogin = false) => {
     const isLoggedin = userStore.getState().isLoggedin;
     set(() => ({
-      header: requireLogin && !isLoggedin ? "Login" : heading,
+      header: requireLogin && isLoggedin ? "Login" : heading,
     }));
   },
+  currencies:{},
+  setCurrencies:(values)=>set(()=>({
+    currencies:values
+  }))
 }));
 
 export default useUtil;

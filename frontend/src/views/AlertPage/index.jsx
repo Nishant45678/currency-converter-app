@@ -3,11 +3,13 @@ import { Card, Input, Label } from "../../components";
 import "./index.css";
 import alertStore from "../../stores/useAlertStore";
 import axios from "axios";
+import useUtil from "../../stores/useUtil";
 
 const AlertPage = () => {
   const [message, setMessage] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const addAlert = alertStore((state) => state.addAlert);
+  const currencies = useUtil(state=>state.currencies)
   const [alert, setAlert] = useState({
     from: "",
     to: "",
@@ -71,7 +73,16 @@ const AlertPage = () => {
                 required
               >
                 <option value="">Select</option>
-                <option value="usd">usd</option>
+                {
+                  currencies ? (
+                    Object.keys(currencies).map((i)=>(
+                <option key={i} value={i}>{i}</option>
+
+                    ))
+                  ):null
+                
+
+                }
               </select>
             </div>
             <div>
@@ -84,7 +95,16 @@ const AlertPage = () => {
                 required
               >
                 <option value="">Select</option>
-                <option value="inr">inr</option>
+               {
+                  currencies ? (
+                    Object.keys(currencies).map((i)=>(
+                <option key={i} value={i}>{i}</option>
+
+                    ))
+                  ):null
+                
+
+                }
               </select>
             </div>
           </div>
