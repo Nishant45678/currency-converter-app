@@ -29,6 +29,9 @@ const postAlerts = async (req, res, next) => {
       .status(201)
       .json({ message: "Alert has been set everyday at 8 AM." });
   } catch (error) {
+    if(error.code===11000){
+      return next("An identical alert is already exist",409)
+    }
     return next(error);
   }
 };
