@@ -5,15 +5,18 @@ import "./index.css";
 import useFavouriteStore from "../../stores/useFavouriteStore";
 import axios from "axios";
 import useUtil from "../../stores/useUtil";
+import userStore from "../../stores/useUserStore";
 const Home = () => {
+  const login = userStore((state) => state.login);
+
   const toggleLike = useFavouriteStore((state) => state.toggleLike);
   const favourites = useFavouriteStore((state) => state.favourites);
 
   const [message, setMessage] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
 
-const currencies = useUtil((state) => state.currencies);
-const setCurrencies = useUtil((state) => state.setCurrencies);
+  const currencies = useUtil((state) => state.currencies);
+  const setCurrencies = useUtil((state) => state.setCurrencies);
 
   const [currency, setCurrency] = useState({
     from: "",
@@ -28,7 +31,7 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
     setCurrency((prv) => ({ ...prv, [name]: value }));
   };
   const handleIsFavourite = async () => {
-    if (currency.camount >=0) {
+    if (currency.camount >= 0) {
       setIsLoading(true);
       try {
         const req = await axios.post(
@@ -103,16 +106,33 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
     console.log(message);
   }, [favourites, currency, message]);
 
-  useEffect(()=>{
-   
-     (async()=>{try {
-      const data = await axios.get("http://localhost:4000/currencies");
-      if (data.status === 200) setCurrencies(data.data.data)
-    } catch (error) {
-      console.log(error)
-    }})();
-    
-  },[])
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await axios.get("http://localhost:4000/currencies");
+        if (data.status === 200) setCurrencies(data.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const isLoggedin = await axios.get("http://localhost:4000/profile", {
+          withCredentials: true,
+        });
+        if (isLoggedin.status === 200) {
+          login(isLoggedin.data);
+        }
+      } catch (error) {
+        if(error.status===401){
+          console.log(error.response?.data.message)
+        }
+      }
+    })();
+  }, []);
 
   return (
     <div className="form__wrapper">
@@ -129,16 +149,13 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
                 required
               >
                 <option value="">Select</option>
-                {
-                  currencies ? (
-                    Object.keys(currencies).map((i)=>(
-                <option key={i} value={i}>{i}</option>
-
+                {currencies
+                  ? Object.keys(currencies).map((i) => (
+                      <option key={i} value={i}>
+                        {i}
+                      </option>
                     ))
-                  ):null
-                
-
-                }
+                  : null}
               </select>
             </div>
 
@@ -166,15 +183,13 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
                 required
               >
                 <option value="">Select</option>
-                {
-                  currencies ? (
-                    Object.keys(currencies).map((i)=>(
-                <option key={i} value={i}>{i}</option>
-
+                {currencies
+                  ? Object.keys(currencies).map((i) => (
+                      <option key={i} value={i}>
+                        {i}
+                      </option>
                     ))
-                  ):null
-
-                }
+                  : null}
               </select>
             </div>
 
@@ -183,7 +198,7 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
               <Input
                 name="camount"
                 id="home__toValue"
-                value={currency.camount??""}
+                value={currency.camount ?? ""}
                 type="number"
                 disabled
               />
@@ -198,7 +213,11 @@ const setCurrencies = useUtil((state) => state.setCurrencies);
             />
           </div>
           <div className="form__action">
-            <Input type="submit" value={isLoading ? "Converting" : "Convert"} disabled={isLoading}/>
+            <Input
+              type="submit"
+              value={isLoading ? "Converting" : "Convert"}
+              disabled={isLoading}
+            />
             <button type="button" className="icons" onClick={handleIsFavourite}>
               <div>
                 <Heart isFavourite={isFavourite} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Card, Label, Input } from "../../components";
 import { Cross, UserEdit } from "../../assets/icons";
 import "./index.css";
@@ -81,9 +81,6 @@ const ProfilePage = () => {
       setData((pre) => ({ ...pre, oldPassword: "", newPassword: "" }));
     }
   };
-  useEffect(() => {
-    console.log(message);
-  }, [message]);
   return (
     <div className="form__wrapper">
       <Card title={"Your Profile"}>
