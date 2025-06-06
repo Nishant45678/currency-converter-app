@@ -10,7 +10,7 @@ const LoginPage = () => {
     name: "",
     password: "",
   });
-  const [message, setMessage] = useState({ type: "", text: ""});
+  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,25 +32,22 @@ const LoginPage = () => {
         }
       );
       if (req.status === 200) {
-        const msg = await req.data.message;
-        const user = await req.data.user;
-        setMessage({ type: "success", text: msg});
+        const msg = req.data.message||"Login successfully";
+        const user = req.data.user;
+        setMessage({ type: "success", text: msg });
         login(user);
-      } else {
-        const errMsg = await req.response?.data?.message;
-        setMessage({ type: "error", text: errMsg });
       }
     } catch (error) {
-      const errMsg = await error.response?.data?.message;
+      const errMsg = error.response?.data?.message||"Something went wrong";
       setMessage({ type: "error", text: errMsg });
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(()=>{
-    console.log(message)
-  },[message])
+  useEffect(() => {
+    console.log(message);
+  }, [message]);
 
   return (
     <div className="form__wrapper">
@@ -80,7 +77,11 @@ const LoginPage = () => {
               required
             />
           </div>
-          <input type="submit" value={isLoading ? "logging in..." : "log in"} />
+          <input
+            type="submit"
+            disabled={isLoading}
+            value={isLoading ? "logging in..." : "log in"}
+          />
         </form>
       </Card>
     </div>

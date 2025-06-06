@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
+import useUtil from "../stores/useUtil";
 
 const Header = () => {
-  return (
-    <div>Header</div>
-  )
-}
+  const { header } = useUtil();
+  return <div>{header}</div>;
+};
 
-export default Header
+export default Header;

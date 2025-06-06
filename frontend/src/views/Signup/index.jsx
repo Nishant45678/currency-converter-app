@@ -28,13 +28,10 @@ const SignUp = () => {
         });
         
         if (req.status === 201)
-          setMessage({type:"success",text:await req.data.message})
-        else setMessage({type:"error",text:await req.response?.data?.message})
-      } else {
-        setMessage({type:"error",text:"password does not match"});
+          setMessage({type:"success",text:req.data.message||"Sign up successfully"})
       }
     } catch (error) {
-      const errMsg = await error?.response?.data.message
+      const errMsg = error?.response?.data.message || "Something went wrong."
       setMessage({type:"error",text:errMsg})
     }
     finally{

@@ -25,23 +25,23 @@ const AlertPage = () => {
       });
       if (req.status === 200) {
         const msg = req.data.message;
-        setMessage({ type: "success", message: msg });
+        setMessage({ type: "success", message: msg||"Alert added successfully" });
         if (alert.from && alert.to && alert.condition && alert.threshold)
           addAlert(alert);
+        setAlert({
+          from: "",
+          to: "",
+          condition: "",
+          threshold: 0,
+          wantDailyUpdates: false,
+        });
       }
     } catch (error) {
       const errMsg = error.response?.data?.message;
-      setMessage({ type: "error", message: errMsg });
+      setMessage({ type: "error", message: errMsg||"Something went wrong while setting Alert" });
     } finally {
       setIsLoading(false);
 
-      setAlert({
-        from: "",
-        to: "",
-        condition: "",
-        threshold: 0,
-        wantDailyUpdates: false,
-      });
     }
     // console.log(alert);
   };

@@ -3,13 +3,13 @@ import { Card, Input, Label } from "../../components";
 import { Heart } from "../../assets/icons/";
 import "./index.css";
 import useFavouriteStore from "../../stores/useFavouriteStore";
-import axios from "axios"
+import axios from "axios";
 const Home = () => {
   const toggleLike = useFavouriteStore((state) => state.toggleLike);
   const favourites = useFavouriteStore((state) => state.favourites);
 
-  const [message,setMessage] = useState({type:"",message:""})
-  const [isLoading,setIsLoading] = useState(false)
+  const [message, setMessage] = useState({ type: "", message: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [currency, setCurrency] = useState({
     from: "",
@@ -23,52 +23,62 @@ const Home = () => {
     const { name, value } = e.target;
     setCurrency((prv) => ({ ...prv, [name]: value }));
   };
-  const handleIsFavourite = () => {
+  const handleIsFavourite = async () => {
     if (currency.camount !== 1) {
-      setIsFavourite((pre) => !pre);
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const req = axios.post("http://localhost:4000/favorites",{
-          from:currency.from,
-          to: currency.to,
-          originalAmount: currency.amount,
-          convertedAmount:currency.camount,
-          date:currency.date
-        },{withCredentials:true}) 
-        setMessage({type:"success",message:req.data?.message||"Added to favourites list"})
-        toggleLike(currency);
+        const req = await axios.post(
+          "http://localhost:4000/favorites",
+          {
+            from: currency.from,
+            to: currency.to,
+            originalAmount: currency.amount,
+            convertedAmount: currency.camount,
+            date: currency.date,
+          },
+          { withCredentials: true }
+        );
+        if (req.status === 200) {
+          setIsFavourite((pre) => !pre);
+          setMessage({
+            type: "success",
+            message: req.data?.message || "Added to favourites list",
+          });
+          toggleLike(currency);
+        }
       } catch (error) {
-        setMessage({type:"error",message:error.response?.data?.message})
-        
-      }finally{
-        setIsLoading(false)
+        setMessage({ type: "error", message: error.response?.data?.message || "Something went Wrong." });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const req = axios.post("http://localhost:4000/currency/convert",{
-        from:currency.from,
-        to:currency.to,
-        amount : currency.amount,
-        date: currency.date
-      })
-      if(req.status ===  200){
-        setMessage({type:"success",message:"amount converted successfully"})
+      const req = axios.post("http://localhost:4000/currency/convert", {
+        from: currency.from,
+        to: currency.to,
+        amount: currency.amount,
+        date: currency.date,
+      });
+      if (req.status === 200) {
+        setMessage({
+          type: "success",
+          message: "amount converted successfully",
+        });
         const converted = req.data.convertedAmount;
-        setCurrency(pre=>({
-          ...pre,camount:converted
-        }))
+        setCurrency((pre) => ({
+          ...pre,
+          camount: converted,
+        }));
       }
     } catch (error) {
-      
-      setMessage({type:"error",message:error.response?.data.message})
-    }
-    finally{
-      setIsLoading(false)
+      setMessage({ type: "error", message: error.response?.data.message ||"Something went wrong." });
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -80,8 +90,8 @@ const Home = () => {
         fav.date === currency.date
     );
     setIsFavourite(found);
-    console.log(message)
-  }, [favourites, currency,message]);
+    console.log(message);
+  }, [favourites, currency, message]);
 
   return (
     <div className="form__wrapper">
@@ -107,7 +117,8 @@ const Home = () => {
               <Input
                 name="amount"
                 id="home__fromValue"
-                type="Number"
+                min="0"
+                type="number"
                 value={currency.amount}
                 onChange={handleChange}
               />
@@ -135,7 +146,7 @@ const Home = () => {
                 name="camount"
                 id="home__toValue"
                 value={currency.camount}
-                type="number"
+                type=""
                 disabled
               />
             </div>
@@ -149,7 +160,7 @@ const Home = () => {
             />
           </div>
           <div className="form__action">
-            <Input type="submit" value={isLoading?"Converting":"Convert"}/>
+            <Input type="submit" value={isLoading ? "Converting" : "Convert"} />
             <button type="button" className="icons" onClick={handleIsFavourite}>
               <div>
                 <Heart isFavourite={isFavourite} />

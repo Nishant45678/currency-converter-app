@@ -42,13 +42,13 @@ const ProfilePage = () => {
         withCredentials: true,
       });
       if (req.status === 200) {
-        const msg = await req.data.message;
-        setMessage({ type: "success", message: msg });
+        const msg = await req.data.message||"Logout successfully";
+        setMessage({ type: "success", text: msg });
         logout();
       }
     } catch (error) {
-      const errMsg = await error?.response?.data.message;
-      setMessage({ type: "error", message: errMsg });
+      const errMsg = await error?.response?.data.message||"Something went wrong while logging out.";
+      setMessage({ type: "error", text: errMsg });
     } finally {
       setIsLoading(false);
     }
@@ -62,12 +62,12 @@ const ProfilePage = () => {
         withCredentials: true,
       });
       
-      if (req.status(200)) {
-        const msg = await req.data.message;
-        setMessage({ type: "success", text: msg });
+      if (req.status===200) {
+        const msg = req.data.message;
+        setMessage({ type: "success", text: msg||"Prfile updated successfully." });
       }
     } catch (error) {
-      const errmsg = await error?.response?.data.message;
+      const errmsg = error?.response?.data.message|| "something went wrong";
       setMessage({ type: "error", text: errmsg });
     } finally {
       setIsLoading(false);
@@ -95,7 +95,7 @@ const ProfilePage = () => {
           <div>
             <Label htmlFor="profile__email">Your email: </Label>
             <Input
-              type="text"
+              type="email"
               id="profile__email"
               name="email"
               disabled={!wantEdit}
@@ -123,7 +123,7 @@ const ProfilePage = () => {
                   Your new password:{" "}
                 </Label>
                 <Input
-                  type="text"
+                  type="password"
                   id="profile__new-password"
                   name="newPassword"
                   disabled={!wantEdit}
@@ -145,7 +145,7 @@ const ProfilePage = () => {
                 disabled={isLoading}
               />
             ) : null}
-            <button onClick={handleLogout} type="button">
+            <button onClick={handleLogout} type="button" disabled={isLoading}>
               logout
             </button>
           </div>
