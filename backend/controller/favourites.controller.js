@@ -18,7 +18,6 @@ const postFavourite = async (req, res,next) => {
       return next(sendError("necessary fields are required.",400))
         
     const exists = await Favourite.findOne({ from, to, date, originalAmount, convertedAmount })
-    console.log(exists)
     if (exists) return next(sendError("already exist in your favourite list.",400))
     const newFaurite = new Favourite({
       from,
