@@ -29,5 +29,40 @@
   display: inline-block;
   width: 100%;
   background-color: #8ed0db;
-   
+ 
+}
+.sidebar__link.active {
+  background-color: #c3eaf1;
+  border: 1px solid #8ed0db;
+  
+}
+
+.sidebar__toggle {
+  display: none;
+  /* background: none; */
+  border: none;
+  font-size: 1.5em;
+  margin-left: 0.5em;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .sidebar__toggle {
+    display: inline-block;
+    padding: 0.1em 0.4em;
+  }
+  .sidebar__list {
+    position: absolute;
+    background-color: aliceblue;
+    right: 10px;
+    z-index: 10;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in,opacity 0.3s ease-in;
+  }
+  .sidebar__list.sidebar__list-open {
+    max-height: 350px;
+    box-shadow: 3px 0px 10px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 5px 5px;
+  }
 }

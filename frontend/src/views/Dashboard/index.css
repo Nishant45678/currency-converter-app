@@ -2,20 +2,18 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.favourites{
+.favourites,.notifications{
   flex:1;
   overflow-y: auto;
   border-radius:10px ;
+  border: 1px solid rgba(0, 0, 0, 0.562);
+  
   /* margin: 0.2em; */
 }
-.notifications{
-  flex:1;
-  overflow-y: auto;
-  border-radius:10px ;
-  /* margin: 0.2em; */
-}
+
 
 table{
   width: 100%;
@@ -27,6 +25,10 @@ table{
 table thead{
   background-color: rgb(7, 83, 182);
   color: aliceblue;
+}
+
+tr,td{
+  border:1px solid rgba(0, 0, 0, 0.507);
 }
 
 tr:nth-of-type(even){
