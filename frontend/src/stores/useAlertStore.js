@@ -1,6 +1,4 @@
 import { create } from "zustand";
-import {v4 as uuidv4} from "uuid"
-
 
 const alertStore = create((set,get)=>({
    alerts:[],
@@ -18,7 +16,7 @@ const alertStore = create((set,get)=>({
     )
     if(!exist){
       set((state)=>({
-        alerts:[...state.alerts,{...pair,id:uuidv4()}]
+        alerts:[...state.alerts,{...pair}]
       }))
     }
   } 

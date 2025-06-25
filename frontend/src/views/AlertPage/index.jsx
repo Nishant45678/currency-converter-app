@@ -23,7 +23,7 @@ const AlertPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.post("http://localhost:4000/alerts", alert, {
+      const req = await axios.post("http://localhost:4000/api/alerts", alert, {
         withCredentials: true,
       });
       if (req.status === 200) {

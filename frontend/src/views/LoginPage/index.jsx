@@ -22,7 +22,7 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       const req = await axios.post(
-        "http://localhost:4000/login",
+        "http://localhost:4000/api/login",
         {
           username: userDetail.name,
           password: userDetail.password,

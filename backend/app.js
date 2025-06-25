@@ -3,6 +3,7 @@ import passport from "passport";
 import session from "express-session";
 import cors from "cors";
 import MongoStore from "connect-mongo";
+import path from "path";
 import "./config/passport.js";
 import {
   userRoute,
@@ -14,10 +15,12 @@ import {
 import errorHandler from "./middleware/errorHandler.middleware.js";
 
 const app = express();
-app.use(cors({
-  origin:'http://localhost:5173',
-  credentials:true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,19 +45,23 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
-  return res.status(200).json({ message: "hello world" });
-});
+// app.get("/", (req, res) => {
+  //   return res.status(200).json({ message: "hello world" });
+  // });
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-app.use("/", userRoute);
-app.use("/", currencyRouter);
-app.use("/historical", historyRouter);
-app.use("/favorites", favouriteRouter);
-app.use("/alerts", notificationRouter);
+app.use("/api/", userRoute);
+app.use("/api/", currencyRouter);
+app.use("/api/historical", historyRouter);
+app.use("/api/favorites", favouriteRouter);
+app.use("/api/alerts", notificationRouter);
+
+app.get("/", (req, res) => {
+    return res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+});
 
 import "./config/cron.js";
 
 app.use(errorHandler);
-
 
 export default app;

@@ -21,7 +21,7 @@ const Dashboard = () => {
         setIsLoading(true);
         try {
           const req = await axios.delete(
-            `http://localhost:4000/favorites/${id}`,
+            `http://localhost:4000/api/favorites/${id}`,
             { withCredentials: true }
           );
           const msg = req.data.message || "Removed from favourites list";
@@ -47,13 +47,13 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req1 = await axios.get("http://localhost:4000/favorites", {
+        const req1 = await axios.get("http://localhost:4000/api/favorites", {
           withCredentials: true,
         });
         if (req1.status === 200) {
           setFavourites(req1.data.data);
         }
-        const req2 = await axios.get("http://localhost:4000/alerts", {
+        const req2 = await axios.get("http://localhost:4000/api/alerts", {
           withCredentials: true,
         });
         if (req2.status === 200) {

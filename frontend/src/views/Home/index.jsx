@@ -35,7 +35,7 @@ const Home = () => {
       setIsLoading(true);
       try {
         const req = await axios.post(
-          "http://localhost:4000/favorites",
+          "http://localhost:4000/api/favorites",
           {
             from: currency.from,
             to: currency.to,
@@ -68,7 +68,7 @@ const Home = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.post("http://localhost:4000/convert", {
+      const req = await axios.post("http://localhost:4000/api/convert", {
         from: currency.from,
         to: currency.to,
         amount: currency.amount,
@@ -109,7 +109,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       try {
-        const data = await axios.get("http://localhost:4000/currencies");
+        const data = await axios.get("http://localhost:4000/api/currencies");
         if (data.status === 200) setCurrencies(data.data.data);
       } catch (error) {
         console.log(error);
@@ -120,7 +120,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       try {
-        const isLoggedin = await axios.get("http://localhost:4000/profile", {
+        const isLoggedin = await axios.get("http://localhost:4000/api/profile", {
           withCredentials: true,
         });
         if (isLoggedin.status === 200) {

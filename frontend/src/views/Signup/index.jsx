@@ -21,7 +21,7 @@ const SignUp = () => {
     setIsLoading(true)
     try {
       if (user.password === user.cpassword) {
-        const req = await axios.post("http://localhost:4000/signup", {
+        const req = await axios.post("http://localhost:4000/api/signup", {
           email: user.email,
           username: user.username,
           password: user.password,

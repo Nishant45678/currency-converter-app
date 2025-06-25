@@ -40,7 +40,7 @@ const ProfilePage = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const req = await axios.get("http://localhost:4000/logout", {
+      const req = await axios.get("http://localhost:4000/api/logout", {
         withCredentials: true,
       });
       if (req.status === 200) {
@@ -62,7 +62,7 @@ const ProfilePage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.put("http://localhost:4000/profile", data, {
+      const req = await axios.put("http://localhost:4000/api/profile", data, {
         withCredentials: true,
       });
       if (req.status === 200) {
