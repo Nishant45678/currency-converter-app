@@ -1,75 +1,27 @@
 import { Router } from "express";
-import passport from "passport";
 import {
+  getProfile,
+  postLogin,
   postProfile,
+  putProfile,
   userLogout,
   userSignUp,
 } from "../controller/user.controller.js";
 import { isAuthenticated } from "../middleware/index.js";
-import { User } from "../models/index.js";
-import sendError from "../utils/sendError.util.js";
+
 
 const router = Router();
 
 router.post("/signup", userSignUp);
 
-router.post("/login", (req, res, next) => {
-  passport.authenticate("local", function (err, user, info) {
-    if (err) {
-      return next(err);
-    }
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: info?.message || "invalid credentials" });
-    }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      return res.status(200).json({
-        message: "logged in successfully",
-        user: { username: req.user.username, email: req.user.email },
-      });
-    })
-  })(req, res, next);
-});
+router.post("/login",postLogin);
 
 router.get("/logout", userLogout);
 
 router.post("/profile", isAuthenticated, postProfile);
 
-router.get("/profile", isAuthenticated, (req, res, next) => {
-  try {
-    const { username, email } = req.user;
-    return res.status(200).json({ email, username });
-  } catch (error) {
-    return next(error);
-  }
-});
+router.get("/profile", isAuthenticated, getProfile);
 
-router.put("/profile", isAuthenticated, async (req, res, next) => {
-  try {
-    const { username, email, oldPassword, newPassword } = req.body;
-
-    const updated = await User.findById(req.user._id);
-    if (oldPassword && newPassword) {
-      const isMatch = await updated.verifyPassword(oldPassword);
-      console.log(isMatch)
-      if (!isMatch)
-        return next(sendError("password does not match",401));
-      updated.password = newPassword;
-    }
-    if (username !== updated.username) updated.username = username;
-    if (email!== updated.email) updated.email = email;
-
-    await updated.save();
-    return res
-      .status(200)
-      .json({ message: "updated successfully", user: { username:updated.username, email:updated.email } });
-  } catch (error) {
-    next(error);
-  }
-});
+router.put("/profile", isAuthenticated, putProfile);
 
 export { router as userRoute };

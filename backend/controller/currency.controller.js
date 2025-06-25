@@ -1,13 +1,13 @@
 import NodeCache from "node-cache";
 import sendError from "../utils/sendError.util.js";
 
-
 const cache = new NodeCache({ stdTTL: 180 });
 
 const conversionHandler = (isReverse) => {
   return async (req, res,next) => {
     try {
       let { amount, from, to, date} = req.body;
+      date ??= new Date().toISOString().split("T")[0]
       if (!amount || !from || !to )
         return next(sendError("All fields are required.",400));
 
@@ -50,4 +50,15 @@ const conversionHandler = (isReverse) => {
   };
 };
 
-export { conversionHandler };
+const getAllCurrencies = async (req,res,next)=>{
+  try {
+    const response = await fetch("https://api.frankfurter.dev/v1/currencies");
+    if(!response.ok) return sendError("failed to fetch currencies.",500)
+    const data = await response.json()
+    return res.status(200).json({data})
+  } catch (error) {
+    return next(error)
+  }
+}
+
+export { conversionHandler,getAllCurrencies };
