@@ -4,9 +4,9 @@ import userStore from "./useUserStore";
 const useUtil = create((set) => ({
   header: "Home",
   setHeader: (heading, requireLogin = false) => {
-    const isLoggedin = userStore.getState().isLoggedin;
+    const isLoggedin = userStore.getState().user.isLoggedin;
     set(() => ({
-      header: requireLogin && isLoggedin ? "Login" : heading,
+      header: requireLogin && !isLoggedin ? "Login" : heading,
     }));
   },
   currencies:{},

@@ -11,6 +11,8 @@ import {
   ProfilePage,
   SignUp,
   AlertPage,
+  Visualization,
+  BaseAndDate
 } from "./views";
 import { MainLayout } from "./layout";
 import userStore from "./stores/useUserStore";
@@ -77,6 +79,12 @@ const App = () => {
               <Dashboard />
             </Protected>
           ),
+        },{
+          path:"/visualization",
+          element: <Visualization />,
+        },{
+          path:"/visualization/current",
+          element: <BaseAndDate />,
         },
       ],
     },

@@ -45,9 +45,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.get("/", (req, res) => {
-  //   return res.status(200).json({ message: "hello world" });
-  // });
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 app.use("/api/", userRoute);

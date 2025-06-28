@@ -1,0 +1,23 @@
+.container{
+  width: 100%;
+  border-radius: 10px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#tooltip{
+  position: absolute;
+  padding: 1em;
+  background-color:rgba(103, 176, 240, 0.678);
+  border-radius: 15px;
+  opacity: 0;
+}
+
+/* #svg__base-and-date{
+  padding: 0.4em 0.8em;
+  background-color: aliceblue;
+  border-radius: 5px;
+  
+} */

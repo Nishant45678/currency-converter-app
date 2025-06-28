@@ -7,6 +7,7 @@ const Sidebar = () => {
   const [isOpen,setIsOpen] = useState(false)
   const links = [
     { name: "Home", path: "/",requireLogin:false },
+    { name: "Visualization", path: "/visualization",requireLogin:false },
     { name: "Login ", path: "/login" ,requireLogin:false},
     { name: "Sign up", path: "/signup",requireLogin:false },
     { name: "Alerts", path: "/alerts",requireLogin:true },

@@ -1,12 +1,11 @@
 {
   "name": "currency-converter-app",
-  "module": "index.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+  "scripts": {
+    "install": "bun i --cwd frontend && bun i --cwd backend",
+    "build":"cd frontend && bun run build",
+    "start": "cd backend && bun run start",
+    "dev":"cd backend && bun run dev"
   }
 }
