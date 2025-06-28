@@ -20,8 +20,11 @@ const BaseAndDate = () => {
     }
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          `https://api.frankfurter.dev/v1/${date}?base=${currency}`
+        const res = await axios.post(
+          `http://localhost:4000/api/historical/current`,{
+            currency,
+            date
+          }
         );
         setData(res.data);
       } catch (error) {
@@ -29,7 +32,7 @@ const BaseAndDate = () => {
       }
     };
     fetchData();
-  }, [currency, navigate]);
+  }, [currency,date, navigate]);
 
   const width = 950;
   const height = 400;
