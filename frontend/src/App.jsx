@@ -12,7 +12,8 @@ import {
   SignUp,
   AlertPage,
   Visualization,
-  BaseAndDate
+  BaseAndDate,
+  TrendData
 } from "./views";
 import { MainLayout } from "./layout";
 import userStore from "./stores/useUserStore";
@@ -85,6 +86,9 @@ const App = () => {
         },{
           path:"/visualization/current",
           element: <BaseAndDate />,
+        },{
+          path:"/visualization/trend",
+          element: <TrendData />,
         },
       ],
     },
