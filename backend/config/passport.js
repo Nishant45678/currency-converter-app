@@ -1,6 +1,8 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { User } from "../models/index.js";
+import bcrypt from "bcryptjs";
+
 
 passport.use(
   new LocalStrategy(async function (username, password, done) {
@@ -9,7 +11,8 @@ passport.use(
       if (!user) {
         return done(null, false, { message: "Incorrect user!" });
       }
-      if (!user.verifyPassword(password)) {
+      const match = await bcrypt.compare(password,user.password)
+      if (!match) {
         return done(null, false, { message: "Incorrect password!" });
       }
       return done(null, user);

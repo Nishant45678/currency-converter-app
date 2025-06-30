@@ -36,7 +36,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV.trim() === "production",
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
     },
   })
@@ -45,7 +45,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
+app.use(express.static(path.join(__dirname, "./public")));
 
 app.use("/api/", userRoute);
 app.use("/api/", currencyRouter);
@@ -54,7 +54,7 @@ app.use("/api/favorites", favouriteRouter);
 app.use("/api/alerts", notificationRouter);
 
 app.get("/", (req, res) => {
-    return res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+    return res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 import "./config/cron.js";

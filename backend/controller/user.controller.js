@@ -41,7 +41,7 @@ const postLogin =  (req, res, next) => {
     if (!user) {
       return res
         .status(401)
-        .json({ message: info?.message || "invalid credentials" });
+        .json({ message: info?.message || "user does not exist" });
     }
     req.logIn(user, (err) => {
       if (err) {
