@@ -1,3 +1,26 @@
-.visualize__base-and-date-wrapper{
+.visualize__base-and-date-wrapper
+{
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
+.visualize__base-and-date-wrapper>div
+{
+  display: flex;
+  flex: 1 1 200px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.visualization__section {
+  margin-bottom: 1em;
+  padding: 1rem 0;
+}
+.visualization__section h4{
+  margin-bottom: 1rem;
+  font-size: 1rem ;
+}
+.visualization__section:not(:first-child){
+  border-top: 1px solid #ccc;
+} 
