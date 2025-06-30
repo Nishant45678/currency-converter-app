@@ -6,6 +6,7 @@ import ProfilePage from "./ProfilePage/index.jsx";
 import SignUp from "./Signup";
 import Visualization from "./Visualization/index.jsx";
 import BaseAndDate from "./Visualization/BaseAndDate/index.jsx";
+import TrendData from "./Visualization/TrendData/index.jsx";
 
 export {
   Home,
@@ -15,5 +16,6 @@ export {
   SignUp,
   AlertPage,
   Visualization,
-  BaseAndDate
+  BaseAndDate,
+  TrendData
 };
