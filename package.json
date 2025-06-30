@@ -3,8 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "install": "bun i --cwd frontend && bun i --cwd backend",
-    "build":"cd frontend && bun run build",
+    "postinstall": "bun i --cwd frontend && bun i --cwd backend",
+    "build":"cd frontend && bun run build && mkdir -p ../backend/public && cp -R ./dist/* ../backend/public",
     "start": "cd backend && bun run start",
     "dev":"cd backend && bun run dev"
   }
