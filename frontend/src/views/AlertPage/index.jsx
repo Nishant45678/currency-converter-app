@@ -7,7 +7,7 @@ import useUtil from "../../stores/useUtil";
 import {toast} from "react-toastify"
 
 const AlertPage = () => {
-  const [message, setMessage] = useState({ type: "", message: "" });
+  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const addAlert = alertStore((state) => state.addAlert);
   const currencies = useUtil(state=>state.currencies)
@@ -23,12 +23,12 @@ const AlertPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.post("http://localhost:4000/api/alerts", alert, {
+      const req = await axios.post("/api/alerts", alert, {
         withCredentials: true,
       });
       if (req.status === 200) {
         const msg = req.data.message;
-        setMessage({ type: "success", message: msg||"Alert added successfully" });
+        setMessage({ type: "success", text: msg||"Alert added successfully" });
         if (alert.from && alert.to && alert.condition && alert.threshold)
           addAlert(alert);
         setAlert({
@@ -42,7 +42,7 @@ const AlertPage = () => {
     } catch (error) {
       const errMsg = error.response?.data?.message;
       // console.log(errMsg)
-      setMessage({ type: "error", message: errMsg||"Something went wrong while setting Alert" });
+      setMessage({ type: "error", text: errMsg||"Something went wrong while setting Alert" });
     } finally {
       setIsLoading(false);
 
@@ -59,16 +59,15 @@ const AlertPage = () => {
 
   useEffect(() => {
     if(!message.type) return;
-    const timeout = setTimeout(() => {
-      if(message.type=== "success"){
-        toast.success(message.message)
+    else if(message.type=== "success"){
+        toast.success(message.text)
+        setMessage({type:"",text:""})
       }else if(message.type==="error"){
-        toast.error(message.message)
-      }
+        toast.error(message.text)
+        setMessage({type:"",text:""})
+    }
       
-    }, 300);
 
-    return clearTimeout(timeout)
   }, [message]);
   return (
     <div className="form__wrapper">
@@ -121,7 +120,7 @@ const AlertPage = () => {
             </div>
           </div>
           <div className="alert__set-condition">
-            <div className="alert__unit">1 usd</div>
+            <div className="alert__unit">1 {alert.from}</div>
             <div className="alert__condition-wrapper">
               <select
                 name="condition"

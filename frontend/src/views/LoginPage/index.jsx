@@ -3,6 +3,7 @@ import { Card, Input, Label } from "../../components";
 import "./index.css";
 import useUserStore from "../../stores/useUserStore";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const login = useUserStore((state) => state.login);
@@ -22,7 +23,7 @@ const LoginPage = () => {
     setIsLoading(true);
     try {
       const req = await axios.post(
-        "http://localhost:4000/api/login",
+        "/api/login",
         {
           username: userDetail.name,
           password: userDetail.password,
@@ -46,7 +47,15 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    console.log(message);
+    if(!message.text) return;
+    else if(message.type === "error") {
+      toast.error(message.text)
+      setMessage({type:"",text:""})
+    }
+    else if(message.type === "success") {
+      toast.success(message.text)
+      setMessage({type:"",text:""})
+    }
   }, [message]);
 
   return (

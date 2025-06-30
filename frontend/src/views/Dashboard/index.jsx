@@ -5,9 +5,10 @@ import useFavouriteStore from "../../stores/useFavouriteStore";
 import useAlertStore from "../../stores/useAlertStore";
 import { debounce } from "lodash";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
-  const [message, setMessage] = useState({ type: "", message: "" });
+  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
   const favourites = useFavouriteStore((state) => state.favourites);
   const setFavourites = useFavouriteStore((state) => state.setter);
@@ -21,16 +22,16 @@ const Dashboard = () => {
         setIsLoading(true);
         try {
           const req = await axios.delete(
-            `http://localhost:4000/api/favorites/${id}`,
+            `/api/favorites/${id}`,
             { withCredentials: true }
           );
           const msg = req.data.message || "Removed from favourites list";
-          setMessage({ type: "success", message: msg });
+          setMessage({ type: "success", text: msg });
           dislike(id);
         } catch (error) {
           const errMsg =
             error.response?.data?.message || "Something went wrong";
-          setMessage({ type: "error", message: errMsg });
+          setMessage({ type: "error", text: errMsg });
         } finally {
           setIsLoading(false);
         }
@@ -47,25 +48,37 @@ const Dashboard = () => {
   useEffect(() => {
     (async () => {
       try {
-        const req1 = await axios.get("http://localhost:4000/api/favorites", {
+        const req1 = await axios.get("/api/favorites", {
           withCredentials: true,
         });
         if (req1.status === 200) {
           setFavourites(req1.data.data);
         }
-        const req2 = await axios.get("http://localhost:4000/api/alerts", {
+        const req2 = await axios.get("/api/alerts", {
           withCredentials: true,
         });
         if (req2.status === 200) {
           setAlerts(req2.data.data);
         }
       } catch (error) {
-        console.log(error);
+        setMessage({type:"error",text:error?.response?.data.message})
       } finally {
         setIsLoading(false);
       }
     })();
   }, []);
+
+  useEffect(()=>{
+    if(!message.type) return;
+    else if(message.type === "error"){
+      toast.error(message.text)
+      setMessage({type:"",text:""})
+    }
+    else if(message.type === "success"){
+      toast.success(message.text)
+      setMessage({type:"",text:""})
+    }
+  },[message])
   return (
     <div className="dashboard-wrapper">
       <div className="favourites">
@@ -82,7 +95,7 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {favourites.length > 0 ? (
+            {!isLoading?favourites.length > 0 ? (
               favourites.map((fav) => (
                 <tr key={fav._id}>
                   <td>{fav.from}</td>
@@ -108,6 +121,10 @@ const Dashboard = () => {
               <tr>
                 <td colSpan={6}>No liked currency pairs,</td>
               </tr>
+            ):(
+             <tr>
+                <td colSpan={6}>Loading...</td>
+              </tr> 
             )}
           </tbody>
         </table>
@@ -125,7 +142,7 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {alerts.length > 0 ? (
+            {!isLoading?alerts.length > 0 ? (
               alerts.map((alert) => (
                 <tr key={alert._id}>
                   <td>{alert.from}</td>
@@ -138,6 +155,10 @@ const Dashboard = () => {
             ) : (
               <tr>
                 <td colSpan={5}>No Alerts found</td>
+              </tr>
+            ):(
+              <tr>
+                <td colSpan={6}>Loading...</td>
               </tr>
             )}
           </tbody>

@@ -6,13 +6,14 @@ import useFavouriteStore from "../../stores/useFavouriteStore";
 import axios from "axios";
 import useUtil from "../../stores/useUtil";
 import userStore from "../../stores/useUserStore";
+import { toast } from "react-toastify";
 const Home = () => {
   const login = userStore((state) => state.login);
 
   const toggleLike = useFavouriteStore((state) => state.toggleLike);
   const favourites = useFavouriteStore((state) => state.favourites);
 
-  const [message, setMessage] = useState({ type: "", message: "" });
+  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const currencies = useUtil((state) => state.currencies);
@@ -35,7 +36,7 @@ const Home = () => {
       setIsLoading(true);
       try {
         const req = await axios.post(
-          "http://localhost:4000/api/favorites",
+          "/api/favorites",
           {
             from: currency.from,
             to: currency.to,
@@ -49,14 +50,14 @@ const Home = () => {
           setIsFavourite((pre) => !pre);
           setMessage({
             type: "success",
-            message: req.data?.message || "Added to favourites list",
+            text: req.data?.message || "Added to favourites list",
           });
           toggleLike(currency);
         }
       } catch (error) {
         setMessage({
           type: "error",
-          message: error.response?.data?.message || "Something went Wrong.",
+          text: error.response?.data?.message || "Something went Wrong.",
         });
       } finally {
         setIsLoading(false);
@@ -68,17 +69,13 @@ const Home = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.post("http://localhost:4000/api/convert", {
+      const req = await axios.post("/api/convert", {
         from: currency.from,
         to: currency.to,
         amount: currency.amount,
         date: currency.date,
       });
       if (req.status === 200) {
-        setMessage({
-          type: "success",
-          message: "amount converted successfully",
-        });
         const converted = req.data.convertedAmount;
         setCurrency((pre) => ({
           ...pre,
@@ -88,7 +85,7 @@ const Home = () => {
     } catch (error) {
       setMessage({
         type: "error",
-        message: error.response?.data.message || "Something went wrong.",
+        text: error.response?.data.message || "Something went wrong.",
       });
     } finally {
       setIsLoading(false);
@@ -103,16 +100,15 @@ const Home = () => {
         fav.date === currency.date
     );
     setIsFavourite(found);
-    console.log(message);
-  }, [favourites, currency, message]);
+  }, [favourites, currency]);
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await axios.get("http://localhost:4000/api/currencies");
+        const data = await axios.get("/api/currencies");
         if (data.status === 200) setCurrencies(data.data.data);
       } catch (error) {
-        console.log(error);
+        setMessage({type:"error",text:error?.response?.data.message})
       }
     })();
   }, []);
@@ -120,7 +116,7 @@ const Home = () => {
   useEffect(() => {
     (async () => {
       try {
-        const isLoggedin = await axios.get("http://localhost:4000/api/profile", {
+        const isLoggedin = await axios.get("/api/profile", {
           withCredentials: true,
         });
         if (isLoggedin.status === 200) {
@@ -133,6 +129,18 @@ const Home = () => {
       }
     })();
   }, []);
+
+  useEffect(()=>{
+  if(!message.type) return;
+  else if(message.type === "error"){
+    toast.error(message.text)
+    setMessage({type:"",text:""})
+  }
+  else if(message.type === "success"){
+    toast.success(message.text)
+    setMessage({type:"",text:""})
+  }
+  },[message])
 
   return (
     <div className="form__wrapper">

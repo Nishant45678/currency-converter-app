@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Input, Label } from "../../components";
 import axios from "axios";
+import {toast} from "react-toastify"
 
 const SignUp = () => {
   const [message,setMessage] = useState({type:"",text:""})
@@ -21,7 +22,7 @@ const SignUp = () => {
     setIsLoading(true)
     try {
       if (user.password === user.cpassword) {
-        const req = await axios.post("http://localhost:4000/api/signup", {
+        const req = await axios.post("/api/signup", {
           email: user.email,
           username: user.username,
           password: user.password,
@@ -29,6 +30,9 @@ const SignUp = () => {
         
         if (req.status === 201)
           setMessage({type:"success",text:req.data.message||"Sign up successfully"})
+      }
+      else{
+        setMessage({type:"error",text:"password does not match!"})
       }
     } catch (error) {
       const errMsg = error?.response?.data.message || "Something went wrong."
@@ -39,7 +43,16 @@ const SignUp = () => {
     }
   };
   useEffect(()=>{
-    console.log(message)
+    if(!message.text) return;
+    else if(message.type === "error") {
+      toast.error(message.text)
+      setMessage({type:"",text:""})
+    }
+    else if(message.type === "success") {
+      toast.success(message.text)
+      setMessage({type:"",text:""})
+    }
+
   },[message])
 
   return (
