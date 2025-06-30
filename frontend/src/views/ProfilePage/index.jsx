@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Label, Input } from "../../components";
 import { Cross, UserEdit } from "../../assets/icons";
 import "./index.css";
 import userStore from "../../stores/useUserStore";
 import axios from "axios";
+import {toast} from "react-toastify"
 
 const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,7 @@ const ProfilePage = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const req = await axios.get("http://localhost:4000/api/logout", {
+      const req = await axios.get("/api/logout", {
         withCredentials: true,
       });
       if (req.status === 200) {
@@ -62,7 +63,7 @@ const ProfilePage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const req = await axios.put("http://localhost:4000/api/profile", data, {
+      const req = await axios.put("/api/profile", data, {
         withCredentials: true,
       });
       if (req.status === 200) {
@@ -81,6 +82,19 @@ const ProfilePage = () => {
       setData((pre) => ({ ...pre, oldPassword: "", newPassword: "" }));
     }
   };
+
+  useEffect(()=>{
+ if(!message.text) return;
+ else if(message.type === "error"){
+  toast.error(message.text)
+  setMessage({type:"",text:""})
+}
+else if( message.type ==="success"){
+  toast.success(message.text)
+  setMessage({type:"",text:""})
+ }
+ 
+  },[message])
   return (
     <div className="form__wrapper">
       <Card title={"Your Profile"}>
