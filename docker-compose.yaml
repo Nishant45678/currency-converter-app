@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - mongo
+    env_file:
+      - ./backend/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/currency-converter
+    ports:
+      - 4000:4000
+    networks:
+      - currency-network
+  mongo:
+    image: mongo
+    restart: always 
+    ports:
+      - 27017:27017
+    networks:
+      - currency-network
+    volumes:
+      - mongo-data:/data/db
+  mongo-express:
+    image: mongo-express
+    restart: always
+    networks:
+      - currency-network
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+volumes:
+    mongo-data:
+networks:
+    currency-network:
+    
+    
